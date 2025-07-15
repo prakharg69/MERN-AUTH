@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModels.js";
+import transporter from "../config/nodemailer.js";
 
 // ✅ Register Controller
 export const registered = async (req, res) => {
@@ -30,6 +31,13 @@ export const registered = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
       maxAge: 604800000,
     });
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: "Welcome To prakharworld ",
+      text: `hey baby girl ${name} i miss you so much this mail is send you by code lots of love by owner PrakharLord `,
+    };
+    await transporter.sendMail(mailOptions);
 
     return res.json({ success: true, message: "User Registered Successfully" });
   } catch (error) {
@@ -86,6 +94,33 @@ export const logout = async (req, res) => {
     });
 
     return res.json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+export const sendVerifyOtp = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await userModel.findById(userId);
+    if (user.isAccountVerified) {
+      return res.json({ success: false, message: "Account already varify " });
+    }
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    user.verifyOtp = otp;
+    user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+
+    await user.save();
+
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: "Acount Verification OTP",
+      text: `Your Otp is ${otp} verify your account using this otp `,
+    };
+     await transporter.sendMail(mailOptions);
+       return res.json({ success: true, message: "Verification email just send to email"});
+
   } catch (error) {
     return res.json({ success: false, message: error.message });
   }
