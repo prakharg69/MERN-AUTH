@@ -1,1 +1,6 @@
 @import "tailwindcss";
+/* index.css */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #333A5C inset;
+  -webkit-text-fill-color: #c7d2fe;
+}
