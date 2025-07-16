@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Login() {
   const [state, setState] = useState("Sign Up");
@@ -8,12 +8,13 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   console.log(name,email,password);
+  const navigate = useNavigate();
   
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400 gap-2">
       <img
-      onClick={()=> Navigate('/')}
+      onClick={()=> navigate('/')}
         src={assets.logo}
         alt=""
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
@@ -63,7 +64,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <p className="mb-4 text-indigo-500 cursor-pointer">
+          <p className="mb-4 text-indigo-500 cursor-pointer" onClick={()=> navigate('/reset-password')}>
             Forget password?
           </p>
           <button className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium">
@@ -82,7 +83,7 @@ function Login() {
           </p>
         ) : (
           <p className="text-gray-400 text-center text-xs mt-4">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <span
               onClick={() => setState("Sign Up")}
               className="text-blue-400 cursor-pointer underline"
