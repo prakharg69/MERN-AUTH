@@ -18,7 +18,8 @@ function Login() {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-      
+    // here axios uses for   sending
+    //  req haan there cors allow react to send req 
     try {
       if (state === "Sign Up") {
         const { data } = await axios.post(`${backendUrl}/api/auth/registered`, {
