@@ -18,6 +18,8 @@ function Login() {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log(backendUrl);
+    
     try {
       if (state === "Sign Up") {
         const { data } = await axios.post(`${backendUrl}/api/auth/registered`, {
@@ -38,7 +40,6 @@ function Login() {
           email,
           password,
         });
-        console.log(data);
         
 
         if (data.success) {
