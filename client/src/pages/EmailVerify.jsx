@@ -1,8 +1,20 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import axios from "axios";
+import { AppContext } from "../context/Appcontext";
+import { toast } from "react-toastify";
 
 const EmailVerification = () => {
+  axios.defaults.withCredentials = true;
+  const {
+    backendUrl,
+    isLoggedIn,
+    setIsLoggedIn,
+    userData,
+    setUserData,
+    getUserData,
+  } = useContext(AppContext);
   const navigate = useNavigate();
   const inputRefs = useRef([]);
 
@@ -16,6 +28,28 @@ const EmailVerification = () => {
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !e.target.value && index > 0) {
       inputRefs.current[index - 1].focus();
+    }
+  };
+  const submitHandle = async (e) => {
+    try {
+      e.preventDefault();
+      const otpArray = inputRefs.current.map((e) => e.value);
+      const otp = otpArray.join("");
+      const { data } = await axios.post(backendUrl+'/api/auth/verify-account',{otp});
+      if(data.success){
+        toast.success(data.message)
+        getUserData();
+        navigate('/')
+      }
+
+      else{
+        toast.error(data.message);
+
+      }
+      
+    } catch (error) {
+        toast.error(error.message);
+       
     }
   };
 
@@ -48,7 +82,7 @@ const EmailVerification = () => {
           Enter the 6-digit code sent to your email.
         </p>
 
-        <form className="flex flex-col items-center gap-5">
+        <form onSubmit={submitHandle} className="flex flex-col items-center gap-5">
           <div className="flex justify-between flex-nowrap gap-2 w-full">
             {Array(6)
               .fill("")
