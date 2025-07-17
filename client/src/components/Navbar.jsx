@@ -30,6 +30,20 @@ function NavBar() {
 
     }
   }
+  const sendOtp =async()=>{
+    try {
+        axios.defaults.withCredentials = true;
+        const {data} = await  axios.post(backendUrl+'/api/auth/send-verify-otp');
+        if(data.success){
+          navigate('/email-verify');
+          toast.success(data.message);
+        }else{
+          toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
+  }
 
   return (
     <div className="w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0">
@@ -39,7 +53,7 @@ function NavBar() {
 
 <div className="absolute hidden group-hover:block top-8 right-0 z-10 bg-white text-black rounded shadow p-2 min-w-max">
   <ul>
-    {!userData.isAccountVerified && (<li className="cursor-pointer hover:bg-gray-100 p-1 rounded whitespace-nowrap">Verify Email</li>)}
+    {!userData.isAccountVerified && (<li onClick={sendOtp} className="cursor-pointer hover:bg-gray-100 p-1 rounded whitespace-nowrap">Verify Email</li>)}
     
     <li onClick={logout} className="cursor-pointer hover:bg-gray-100 p-1 rounded">Logout</li>
   </ul>
