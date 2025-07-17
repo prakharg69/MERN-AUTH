@@ -1,6 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { AppContext } from "../context/Appcontext";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -9,13 +12,32 @@ const ResetPassword = () => {
   const inputRefs = useRef([]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+   axios.defaults.withCredentials = true;
+   const {
+       backendUrl,
+       isLoggedIn,
+       setIsLoggedIn,
+       userData,
+       setUserData,
+       getUserData,
+     } = useContext(AppContext);
   // 1️⃣ Handle Email Submit
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async(e) => {
+  
     e.preventDefault();
-    console.log("Email Submitted:", email);
+    try {
+        const {data} = await axios.post(backendUrl+'/api/auth/send-reset-otp',{email});
+        if(data.success){
+            setStep(2);
+            toast.success(data.message);
+        }else{
+          toast.error(data.message);
+        }
     // Your logic to send OTP email here
-    setStep(2);
+    
+    } catch (error) {
+        toast.error(error.message);
+    }
   };
 
   // 2️⃣ Handle OTP Submit
