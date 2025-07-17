@@ -14,7 +14,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { backendUrl, setIsLoggedIn } = useContext(AppContext);
+  const { backendUrl, setIsLoggedIn ,getUserData} = useContext(AppContext);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -30,6 +30,7 @@ function Login() {
         if (data.success) {
           setIsLoggedIn(true);
           toast.success(data.message);
+          getUserData();
           navigate("/");
         } else {
           toast.error(data.message);
@@ -43,6 +44,8 @@ function Login() {
 
         if (data.success) {
           setIsLoggedIn(true);
+           toast.success(data.message);
+           getUserData();
           navigate("/");
         } else {
           toast.error(data.message);
