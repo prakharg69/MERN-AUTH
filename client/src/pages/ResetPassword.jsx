@@ -41,12 +41,22 @@ const ResetPassword = () => {
   };
 
   // 2️⃣ Handle OTP Submit
-  const handleOtpSubmit = (e) => {
+  const handleOtpSubmit = async(e) => {
     e.preventDefault();
     const otp = inputRefs.current.map((ref) => ref.value).join("");
-    console.log("OTP Submitted:", otp);
-    // Your logic to verify OTP here
-    setStep(3);
+    try {
+        const {data} = await axios.post(backendUrl+'/api/auth/restverifyEmail',{email,otp});
+        if(data.success){
+            setStep(3);
+            toast.success(data.message);
+        }else{
+          toast.error(data.message);
+        }
+    // Your logic to send OTP email here
+    
+    } catch (error) {
+        toast.error(error.message);
+    }
   };
 
   // 3️⃣ Handle Reset Password Submit
