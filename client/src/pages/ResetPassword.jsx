@@ -60,12 +60,25 @@ const ResetPassword = () => {
   };
 
   // 3️⃣ Handle Reset Password Submit
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    console.log("New Password:", password);
-    console.log("Confirm Password:", confirmPassword);
-    // Your logic to reset password here
-  };
+const handlePasswordSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    if (password.toString() === confirmPassword.toString()) {
+      const { data } = await axios.post(backendUrl + '/api/auth/rest-password', { email,newPassword: password });
+      if (data.success) {
+        toast.success(data.message);
+        navigate('/login');
+      } else {
+        toast.error(data.message);
+      }
+    } else {
+      toast.error("Passwords do not match");
+    }
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
+
 
   const handleOtpInput = (e, index) => {
     const value = e.target.value;
